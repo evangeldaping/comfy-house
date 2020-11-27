@@ -20,7 +20,7 @@ let buttonsDOM = [];
 class Products {
     async getProducts(){
         try {
-            let result = await fetch('products.json');
+            let result = await fetch("products.json");
             let data = await result.json();
 
             let products = data.items;
@@ -109,7 +109,7 @@ class UI {
     addCartItem(item) {
     const div = document.createElement("div");
     div.classList.add("cart-item");
-    div.innerHTML = `<!-- cart item -->
+        div.innerHTML = `<!-- cart item -->
             <!-- item image -->
             <img src=${item.image} alt="product" />
             <!-- item info -->
@@ -127,13 +127,30 @@ class UI {
                 <i class="fas fa-chevron-down" data-id=${item.id}></i>
             </div>
             <!-- cart item -->
-    `;
+        `;
     cartContent.appendChild(div);
     }
 
     showCart() {
         cartOverlay.classList.add("transparentBcg");
         cartDOM.classList.add("showCart");
+    }
+
+    setupAPP() {
+        cart = Storage.getCart();
+        this.setCartValues(cart);
+        this.populateCart(cart);
+        cartBtn.addEventListener("click", this.showCart);
+        closeCartBtn.addEventListener("click", this.hideCart);
+    }
+
+    populateCart(cart) {
+        cart.forEach(item => this.addCartItem(item));
+    }
+
+    hideCart() {
+        cartOverlay.classList.remove("transparentBcg");
+        cartDOM.classList.remove("showCart");
     }
 }
 
@@ -159,9 +176,10 @@ class Storage {
 document.addEventListener("DOMContentLoaded", () => {
     const ui = new UI();
     const products = new Products();
-    //ui.setupAPP();
+    //setup app
+    ui.setupAPP();
 
-  // get all products
+    // get all products
     products
     .getProducts()
     .then(products => {
